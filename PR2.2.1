@@ -1,0 +1,48 @@
+-- Практическая работа 2.2 — Создание и изменение архитектуры БД (Test_db). 
+
+create table customers(
+id_customer char(5) unique not null,
+CompanyName varchar(40) not null,
+ConstactName char(30) null,
+Address varchar(60) null,
+city char(15) null,
+Phone char(24) null,
+Fax char(24) null
+);
+
+create table orders(
+id_order integer not null,
+id_customer char(5) unique not null,
+OrderDate date null,
+ShippeDate date null,
+Freight money null,
+Shipname varchar(40) null,
+ShipAddress varchar(60) null, 
+Quantity integer null
+);
+
+alter table orders
+add column shipregion integer null; -- добавить столбец 
+
+alter table orders
+alter column shipregion type varchar(40); -- изменить типы данных у столбца
+
+alter table orders
+drop column shipregion; -- удалить столбец
+
+alter table orders
+alter column orderdate set default current_date; -- определить значение по умолчанию столбца
+
+alter table orders 
+add constraint quantityy
+check (quantity > 1 and quantity < 30)  -- ограничение для обеспечения целостности данных 
+
+alter table orders
+add primary key (id_order); -- добавить primary key к столбцу
+
+alter table customers 
+add primary key (id_customer); -- добавить primary key к столбцу
+
+alter table orders
+add constraint OR_CU
+foreign key (id_customer) references customers(id_customer)

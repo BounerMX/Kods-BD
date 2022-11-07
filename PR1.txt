@@ -1,0 +1,70 @@
+-- Практическая работа 01 - Создание БД PHARMNETWORK.
+
+-- PHARMACY #2
+create table Аптека ( 
+PH_ID serial primary key,
+Addreass varchar(40)
+);
+
+-- GROUP #3
+create table Группа_препаратов ( 
+GR_ID serial primary key,
+"Name" varchar(40)
+);
+
+-- PREPARATION #4
+create table Препарат ( 
+R_ID serial primary key,
+GR_ID smallint -- int2
+);
+
+-- AVAILABILITY #5
+create table Наличие_препаратов( 
+A_ID serial primary key,
+PH_ID smallint,
+R_ID smallint,
+Quantity smallint, 
+DateEnd date
+);
+
+-- Deficit #6
+create table Дефицит_препараторв(  
+D_ID serial primary key,
+PH_ID smallint, 
+PR_ID smallint,
+Solution varchar(40),
+DateStart date,
+DateEnd date not null
+);
+
+-- Employee
+create table Сотрудник ( 
+E_ID serial primary key,
+PH_ID smallint,
+FName varchar(40),
+Post varchar(40)
+);
+
+-- Client
+create table Клиент (
+C_ID serial primary key,
+Fname varchar(40),
+LName varchar(40),
+DateReg date not null
+);
+
+-- Basket 
+create table Корзина_покупок (
+BS_ID serial primary key,
+E_ID smallint,
+C_ID smallint
+);
+
+-- Buying
+create table Покупка (
+B_ID serial primary key,
+PH_ID smallint, 
+PR_ID smallint,
+BS_ID smallint,
+Price money
+);

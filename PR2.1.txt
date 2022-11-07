@@ -1,0 +1,128 @@
+-- Практическая работа 2.1 — изменение структуры БД (PHARMNETWORK).
+
+-- PHARMACY #2
+create table PHARMACY( 
+PH_ID serial primary key,
+Addreass varchar(40)
+);
+
+-- GROUP #3
+create table "GROUP"( 
+GR_ID serial primary key,
+"Name" varchar(40)
+);
+
+-- PREPARATION #4
+create table PREPARATION( 
+R_ID serial primary key,
+GR_ID smallint unique
+);
+
+-- AVAILABILITY #5
+create table AVAILABILITY( 
+A_ID serial primary key,
+PH_ID smallint unique,
+PR_ID smallint unique,
+Quantity smallint, 
+DateEnd date
+);
+
+-- Deficit #6
+create table Deficit(  
+D_ID serial primary key,
+PH_ID smallint unique, 
+PR_ID smallint unique,
+Solution varchar(40),
+DateStart date,
+DateEnd date not null
+);
+
+-- Employee #7
+create table Employee( 
+E_ID serial primary key,
+PH_ID smallint unique,
+FName varchar(40),
+Post varchar(40) 
+);
+
+-- Client #8
+create table Client(
+C_ID serial primary key,
+Fname varchar(40),
+LName varchar(40),
+DateReg date not null
+);
+
+-- Basket #9
+create table Basket(
+BS_ID serial primary key,
+E_ID smallint unique,
+C_ID smallint unique
+);
+
+-- Buying #10
+create table Buying(
+B_ID serial primary key,
+PH_ID smallint unique, 
+PR_ID smallint unique,
+BS_ID smallint unique,
+Price money
+);
+
+
+
+-_-_-/ Client \-_-_-
+
+alter table client -- Клиент(client) -> Корзина_Покупок(basket)
+ADD CONSTRAINT Cl_Ba
+FOREIGN KEY (c_id) REFERENCES basket(c_id); 
+
+-_-_-/ PHARMACY \-_-_-
+
+alter table pharmacy  -- Аптека(pharmacy) -> Дефицит_препарата_в_аптека(deficit)
+ADD CONSTRAINT PH_DE
+FOREIGN KEY (ph_id) REFERENCES deficit(ph_id); 
+
+alter table pharmacy  -- Аптека(pharmacy) -> Наличие_препарата(availability)
+ADD CONSTRAINT PH_AV
+FOREIGN KEY (ph_id) REFERENCES availability(ph_id);
+
+alter table pharmacy  -- Аптека(pharmacy) -> Cотрудник(employee)
+ADD CONSTRAINT PH_EM
+FOREIGN KEY (ph_id) REFERENCES employee(ph_id);
+
+alter table pharmacy  -- Аптека(pharmacy) -> Корзина_Покупок(basket)
+ADD CONSTRAINT PH_BY
+FOREIGN KEY (ph_id) REFERENCES buying(ph_id);
+
+-_-_-/ EMPLOYEE \-_-_-
+
+alter table employee -- Сотрудник(employee) -> Корзина покупок(basket)
+ADD CONSTRAINT EM_BA
+FOREIGN KEY (e_id) REFERENCES basket(e_id);
+
+-_-_-/ Basket \-_-_-
+
+alter table basket -- Корзина_Покупок(basket) -> Покупка(Buying)
+ADD CONSTRAINT BA_BU
+FOREIGN KEY (bs_id) REFERENCES buying(bs_id);
+
+-_-_-/ Preparation \-_-_-
+
+ALTER TABLE preparation -- Препарат(preparation) -> Наличие_препарата(availability)
+add CONSTRAINT PR_AV 
+FOREIGN KEY (pr_id) REFERENCES availability(pr_id);
+
+alter table preparation -- Препарат(preparation) -> Покупка(Buying)
+add constraint PR_BY
+foreign key (pr_id) references buying(pr_id);
+
+alter table preparation -- Препарат(preparation) -> Дефицит_препарата_в_аптека(deficit)
+add constraint PR_DF
+foreign key (pr_id) references deficit(pr_id);
+
+-_-_-/ "Group" \-_-_-
+
+alter table "GROUP" -- Группа препаратов(group) -> Препарат(preparation)
+add constraint GR_PR
+foreign key (gr_id) references preparation(gr_id);
